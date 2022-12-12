@@ -5,10 +5,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Steps to start:
 1. Clone this Repository
 2. Install node : [https://nodejs.org/en/download/package-manager](https://nodejs.org/en/download/package-manager)
-4. Install Yarn : [link] (https://classic.yarnpkg.com/en/docs/install "Install Yarn").
+4. Install Yarn : [Install yarn](https://classic.yarnpkg.com/en/docs/install)
 5. Inside the project directory, run `yarn install` to install all the dependencies.
 6. Start the app using `yarn start` 
-7. App will Open in browser: [https://localhost:3000](http://localhost:3000/)
+7. App will Open in browser: [http://localhost:3000](http://localhost:3000/)
 
 
 ## Available Scripts
