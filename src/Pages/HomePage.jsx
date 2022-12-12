@@ -10,7 +10,7 @@ const HomePage = () => {
   const [url, setUrl] = React.useState("");
   const [files, setFiles] = React.useState([]);
   const [uploading, setUploading] = React.useState(false);
-  const { uploaded, progress } = useUpload(uploading, setUploading, files);
+  const { uploaded, progress } = useUpload(uploading, setUploading, files[0]);
 
   return (
     <div style={styles.container}>

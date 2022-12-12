@@ -45,7 +45,7 @@ const useUpload = (uploading: boolean, setUploading: setState, file: File) => {
       uploadFile();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploadFile]);
+  }, [uploading]);
 
   return { progress, uploaded };
 };
