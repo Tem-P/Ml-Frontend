@@ -8,8 +8,9 @@ import styles from "../styles/homepage";
 
 const HomePage = () => {
   const [url, setUrl] = React.useState("");
+  const [files, setFiles] = React.useState([]);
   const [uploading, setUploading] = React.useState(false);
-  const { uploaded, progress } = useUpload(uploading, setUploading);
+  const { uploaded, progress } = useUpload(uploading, setUploading, files);
 
   return (
     <div style={styles.container}>
@@ -18,8 +19,8 @@ const HomePage = () => {
       {!url && (
         <DropZone
           onChange={(files) => {
-            console.log(files);
             setUrl(URL.createObjectURL(files[0]));
+            setFiles(files);
           }}
           accept={["video/*"]}
         />
