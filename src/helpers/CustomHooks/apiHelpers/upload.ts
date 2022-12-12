@@ -25,13 +25,15 @@ export const upload = async (
   formData.append("file", file);
   try {
     const res = await axios.post("/upload", formData, config);
-    if (res.data.success) {
-      return { response: res.data, error: null };
+    if (res.status === 200) {
+      return { response: res, error: null };
     } else {
-      return { response: null, error: res.data };
+      return { response: null, error: res };
     }
   } catch (err) {
     console.log(err);
-    return { response: null, error: err };
+    throw err;
+
+    // return { response: null, error: err };
   }
 };
