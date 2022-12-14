@@ -23,28 +23,36 @@ const RealTime = () => {
     null
   );
 
+  /**
+   * This function is used to get the video from the webcam
+   * and set the videoRef to the video stream
+   */
   const getVideo = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: false })
       .then((stream) => {
         if (videoRef.current === null) return;
-        videoRef.current.srcObject = stream as MediaStream;
-        videoRef?.current?.play();
-
-        setVideo(videoRef.current);
-        setIsVideoReady(true);
+        videoRef.current.srcObject = stream as MediaStream; // Assign the stream to the video element
+        videoRef?.current?.play(); // Play the video
+        setVideo(videoRef.current); // Set the video state variable
+        setIsVideoReady(true); // Set the video ready state variable
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  /**
+   * Initialize the model to the video stream and get the pose
+   * and draw the keypoints and skeleton
+   */
   const getModel = () => {
     const model = ml5.poseNet(videoRef.current, () => {
       console.log("Model Loaded");
     });
     model.flipHorizontal = true;
     model.maxPoseDetections = 1;
+    // Every time the model detects a pose, it will call the draw function
     model.on("pose", (results: Array<{ pose: { keypoints: never[] } }>) => {
       if (results.length > 0) {
         draw(results[0].pose);
@@ -53,6 +61,11 @@ const RealTime = () => {
     });
   };
 
+  /**
+   * This function is used to draw the keypoints and skeleton
+   * @param points This is the keypoints and skeleton points
+   * @returns void
+   */
   const draw = (
     points = {
       keypoints: [],
@@ -72,6 +85,14 @@ const RealTime = () => {
     drawSkeleton(points.keypoints, 0.5, ctx);
   };
 
+  /**
+   * This function is used to draw the points on the canvas
+   * @param keypoints
+   * @param minConfidence
+   * @param ctx
+   * @param scale
+   * @returns
+   */
   const drawKeypoints: drawKeypointstype = (
     keypoints = [],
     minConfidence,
@@ -97,6 +118,8 @@ const RealTime = () => {
   ) => {
     if (!ctx) return;
     const adjacentKeyPoints = getAdjacentKeyPoints(keypoints, minConfidence);
+    // adjacent key points are the points that are connected by a line
+    // e.g. left wrist and left elbow, left elbow and left shoulder, etc.
     adjacentKeyPoints.forEach((keypoints) => {
       drawSegment(
         toTuple(keypoints[0].position),
@@ -203,12 +226,7 @@ const RealTime = () => {
           position: "relative",
         }}
       >
-        <video
-          ref={videoRef}
-          width={w}
-          height={h}
-          //flip the video horizontally
-        />
+        <video ref={videoRef} width={w} height={h} />
         <canvas
           ref={canvasRef}
           width={w}
