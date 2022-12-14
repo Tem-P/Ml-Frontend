@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Button } from "@mui/material";
 import React, { useEffect } from "react";
 // import Sketch from "react-p5";
 // @ts-ignore
@@ -22,6 +23,10 @@ const RealTime = () => {
   const [video, setVideo] = React.useState<HTMLVideoElement | null | undefined>(
     null
   );
+  const [leftShoulderAngle, setLeftShoulderAngle] = React.useState(0);
+  const [rightShoulderAngle, setRightShoulderAngle] = React.useState(0);
+  const [leftHipAngle, setLeftHipAngle] = React.useState(0);
+  const [rightHipAngle, setRightHipAngle] = React.useState(0);
 
   /**
    * This function is used to get the video from the webcam
@@ -83,6 +88,7 @@ const RealTime = () => {
     ctx?.restore();
     drawKeypoints(points.keypoints, 0.5, ctx);
     drawSkeleton(points.keypoints, 0.5, ctx);
+    putAngles(points.keypoints);
   };
 
   /**
@@ -198,6 +204,91 @@ const RealTime = () => {
     ctx.fill();
   };
 
+  const putAngles = (keypoints: any[]) => {
+    const leftShoulder = keypoints.find((keypoint) => {
+      return keypoint.part === "leftShoulder";
+    });
+    const leftElbow = keypoints.find((keypoint) => {
+      return keypoint.part === "leftElbow";
+    });
+    const leftWrist = keypoints.find((keypoint) => {
+      return keypoint.part === "leftWrist";
+    });
+    const rightShoulder = keypoints.find((keypoint) => {
+      return keypoint.part === "rightShoulder";
+    });
+    const rightElbow = keypoints.find((keypoint) => {
+      return keypoint.part === "rightElbow";
+    });
+    const rightWrist = keypoints.find((keypoint) => {
+      return keypoint.part === "rightWrist";
+    });
+    const leftHip = keypoints.find((keypoint) => {
+      return keypoint.part === "leftHip";
+    });
+    const leftKnee = keypoints.find((keypoint) => {
+      return keypoint.part === "leftKnee";
+    });
+    const leftAnkle = keypoints.find((keypoint) => {
+      return keypoint.part === "leftAnkle";
+    });
+    const rightHip = keypoints.find((keypoint) => {
+      return keypoint.part === "rightHip";
+    });
+    const rightKnee = keypoints.find((keypoint) => {
+      return keypoint.part === "rightKnee";
+    });
+
+    const rightAnkle = keypoints.find((keypoint) => {
+      return keypoint.part === "rightAnkle";
+    });
+
+    const leftShoulderAngle = calculateAngle(
+      leftShoulder.position,
+      leftElbow.position,
+      leftWrist.position
+    );
+
+    const rightShoulderAngle = calculateAngle(
+      rightShoulder.position,
+      rightElbow.position,
+      rightWrist.position
+    );
+
+    const leftHipAngle = calculateAngle(
+      leftHip.position,
+      leftKnee.position,
+      leftAnkle.position
+    );
+
+    const rightHipAngle = calculateAngle(
+      rightHip.position,
+      rightKnee.position,
+      rightAnkle.position
+    );
+
+    const leftShoulderAngleDeg = (leftShoulderAngle * 180) / Math.PI;
+    const rightShoulderAngleDeg = (rightShoulderAngle * 180) / Math.PI;
+    const leftHipAngleDeg = (leftHipAngle * 180) / Math.PI;
+    const rightHipAngleDeg = (rightHipAngle * 180) / Math.PI;
+
+    setLeftShoulderAngle(leftShoulderAngleDeg);
+    setRightShoulderAngle(rightShoulderAngleDeg);
+    setLeftHipAngle(leftHipAngleDeg);
+    setRightHipAngle(rightHipAngleDeg);
+  };
+
+  const calculateAngle = (
+    a: { x: number; y: number },
+    b: { x: number; y: number },
+    c: { x: number; y: number }
+  ) => {
+    const AB = Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+    const BC = Math.sqrt(Math.pow(b.x - c.x, 2) + Math.pow(b.y - c.y, 2));
+    const AC = Math.sqrt(Math.pow(c.x - a.x, 2) + Math.pow(c.y - a.y, 2));
+    return Math.acos((BC * BC + AB * AB - AC * AC) / (2 * BC * AB));
+  };
+
   useEffect(() => {
     getVideo();
   }, []);
@@ -207,6 +298,56 @@ const RealTime = () => {
       getModel();
     }
   }, [isVideoReady]);
+
+  // put angles on canvas when angles are calculated
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    if (
+      leftShoulderAngle &&
+      rightShoulderAngle &&
+      leftHipAngle &&
+      rightHipAngle
+    ) {
+      const ctx = canvasRef?.current.getContext("2d");
+      if (!ctx) return;
+      // ctx.clearRect(0, 0, w, h);
+      ctx.font = "20px Arial";
+      ctx.fillStyle = "white";
+      ctx.fillText(
+        `Left Shoulder Angle: ${leftShoulderAngle.toFixed(2)}°`,
+        10,
+        20
+      );
+      ctx.fillText(
+        `Right Shoulder Angle: ${rightShoulderAngle.toFixed(2)}°`,
+        10,
+        40
+      );
+      ctx.fillText(`Left Hip Angle: ${leftHipAngle.toFixed(2)}°`, 10, 60);
+      ctx.fillText(`Right Hip Angle: ${rightHipAngle.toFixed(2)}°`, 10, 80);
+    }
+  }, [leftShoulderAngle, rightShoulderAngle, leftHipAngle, rightHipAngle]);
+
+  const stopVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.srcObject = null;
+      navigator.mediaDevices
+        .getUserMedia({ video: false })
+        .then((stream) => {
+          videoRef.current.srcObject = stream;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      // clear canvas
+      if (!canvasRef.current) return;
+      const ctx = canvasRef?.current.getContext("2d");
+      if (!ctx) return;
+      ctx.clearRect(0, 0, w, h);
+    }
+  };
 
   return (
     <div
@@ -239,6 +380,19 @@ const RealTime = () => {
           }}
         />
       </div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={stopVideo}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: "2",
+        }}
+      >
+        Stop Video
+      </Button>
     </div>
   );
 };
