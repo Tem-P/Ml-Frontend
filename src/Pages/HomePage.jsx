@@ -4,6 +4,7 @@ import CircularProgressWithLabel from "../Components/CircularProgressWithLabel";
 import { DropZone } from "../Components/drop-zone";
 import VideoRenderer from "../Components/VideoRenderer";
 import useUpload from "../helpers/CustomHooks/useUpload";
+import useWindowDimensions from "../helpers/CustomHooks/useWindowDimension";
 import styles from "../styles/homepage";
 
 const HomePage = () => {
@@ -11,9 +12,9 @@ const HomePage = () => {
   const [files, setFiles] = React.useState([]);
   const [uploading, setUploading] = React.useState(false);
   const { uploaded, progress } = useUpload(uploading, setUploading, files[0]);
-
+  const { height } = useWindowDimensions();
   return (
-    <div style={styles.container}>
+    <div style={{ ...styles.container, height: height }}>
       <h1 style={styles.containerHeader}>Pose Detector</h1>
       {url && <VideoRenderer src={url} />}
       {!url && (

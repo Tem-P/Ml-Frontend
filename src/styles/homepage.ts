@@ -5,7 +5,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     width: "50vw",
-    height: "100vh",
     backgroundColor: "#1e1e1e",
     margin: "auto",
     padding: "2rem",

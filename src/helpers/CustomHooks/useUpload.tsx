@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { upload } from "./apiHelpers/upload";
+import { upload } from "../apiHelpers/upload";
 
 type setState = React.Dispatch<React.SetStateAction<boolean>>;
 
