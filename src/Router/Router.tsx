@@ -21,7 +21,10 @@ const Router = () => {
         <SideNav />
         <div style={{ flex: "1", overflow: "scroll", height: height }}>
           <Routes>
+            {/* If on homw page redirect to weightlifting */}
+            {/* Redirect to weightlifting */}
             <Route path="/" element={<HomePage />} />
+            <Route path="/weightLifting" element={<HomePage />} />
             {/* For every other rute */}
             <Route path="/RealTime" element={<RealTime />} />
             <Route path="*" element={<ErrorPage />} />

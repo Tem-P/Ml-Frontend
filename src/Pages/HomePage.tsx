@@ -14,12 +14,14 @@ const HomePage = () => {
   const { uploaded, progress } = useUpload(uploading, setUploading, files[0]);
   const { height } = useWindowDimensions();
   return (
-    <div style={{ ...styles.container, height: height }}>
+    <div
+      style={{ ...(styles.container as React.CSSProperties), height: height }}
+    >
       <h1 style={styles.containerHeader}>Pose Detector</h1>
       {url && <VideoRenderer src={url} />}
       {!url && (
         <DropZone
-          onChange={(files) => {
+          onChange={(files?: any) => {
             setUrl(URL.createObjectURL(files[0]));
             setFiles(files);
           }}
@@ -27,14 +29,14 @@ const HomePage = () => {
         />
       )}
       {uploading && (
-        <div style={styles.uploading}>
+        <div style={styles.uploading as React.CSSProperties}>
           <CircularProgressWithLabel value={progress} style={{}} />
           <h2 style={styles.uploadingHeader}>Uploading...</h2>
         </div>
       )}
       {uploaded && <h1 style={styles.uploaded}>Uploaded!</h1>}
       {url && (
-        <div style={styles.buttons}>
+        <div style={styles.buttons as React.CSSProperties}>
           <Button
             variant="contained"
             onClick={() => {
