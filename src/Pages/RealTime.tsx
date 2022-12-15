@@ -289,6 +289,7 @@ const RealTime = () => {
     return Math.acos((BC * BC + AB * AB - AC * AC) / (2 * BC * AB));
   };
 
+  //PRogram starts here
   useEffect(() => {
     getVideo();
   }, []);
@@ -335,6 +336,7 @@ const RealTime = () => {
       navigator.mediaDevices
         .getUserMedia({ video: false })
         .then((stream) => {
+          if (!videoRef.current) return;
           videoRef.current.srcObject = stream;
         })
         .catch((err) => {
