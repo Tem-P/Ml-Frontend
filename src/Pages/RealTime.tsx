@@ -343,7 +343,6 @@ const RealTime = () => {
           console.log(err);
         });
 
-      // clear canvas
       if (!canvasRef.current) return;
       const ctx = canvasRef?.current.getContext("2d");
       if (!ctx) return;
