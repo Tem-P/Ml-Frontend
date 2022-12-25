@@ -24,8 +24,9 @@ const HomePage = () => {
 
   //Initializes the socket io instance and sets the socket state variable
   const initSocket = () => {
-    const newSocket = io("http://127.0.0.1:5000/api/v1");
+    const newSocket = io("http://127.0.0.1:5000/api/v1/status");
     // Check if the socket is connected
+
     newSocket.on("connected", () => {
       console.log("Connected");
       alert("Connected");
@@ -51,6 +52,7 @@ const HomePage = () => {
   //This is used to get the status of the video
   const getStatus = () => {
     if (socket) {
+      console.log("Getting status", id, socket);
       socket.emit("get_status", id);
     }
   };
@@ -98,7 +100,7 @@ const HomePage = () => {
           </Button>
         </div>
       )}
-      {id && (
+      {id !== null && (
         <Button
           variant="contained"
           onClick={() => {
