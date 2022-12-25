@@ -13,6 +13,7 @@ type setState = React.Dispatch<React.SetStateAction<boolean>>;
 const useUpload = (uploading: boolean, setUploading: setState, file: File) => {
   const [progress, setProgress] = React.useState(0);
   const [uploaded, setUploaded] = React.useState(false);
+  const [id, setId] = React.useState<number | null>(null);
 
   /**
    * A callback function that is used to update the progress state variable
@@ -33,7 +34,8 @@ const useUpload = (uploading: boolean, setUploading: setState, file: File) => {
       console.log(error);
       return;
     } else {
-      console.log(response);
+      console.log(response.data.id, "Got this data");
+      setId(response.data.id);
     }
     setProgress(0);
     setUploaded(true);
@@ -47,7 +49,7 @@ const useUpload = (uploading: boolean, setUploading: setState, file: File) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploading]);
 
-  return { progress, uploaded };
+  return { progress, uploaded, id };
 };
 
 export default useUpload;

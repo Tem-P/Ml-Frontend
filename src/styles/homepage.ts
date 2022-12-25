@@ -32,7 +32,7 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "30%",
+    width: "80%",
     marginTop: "2rem",
   },
   uploaded: {
