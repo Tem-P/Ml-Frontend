@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
-import React from "react";
+import { Button, CircularProgress } from "@mui/material";
+import React, { useEffect } from "react";
 import CircularProgressWithLabel from "../Components/CircularProgressWithLabel";
 import { DropZone } from "../Components/drop-zone";
 import VideoRenderer from "../Components/VideoRenderer";
@@ -12,12 +12,15 @@ const HomePage = () => {
   const [url, setUrl] = React.useState("");
   const [files, setFiles] = React.useState([]);
   const [uploading, setUploading] = React.useState(false);
+  const [processing, setProcessing] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+  const { height } = useWindowDimensions();
+
   const { uploaded, progress, id } = useUpload(
     uploading,
     setUploading,
     files[0]
   );
-  const { height } = useWindowDimensions();
 
   //Stores the socke io instance
   const [socket, setSocket] = React.useState<any>(null);
@@ -40,28 +43,45 @@ const HomePage = () => {
     initSocket();
   }, []);
 
+  useEffect(() => {
+    if (id && socket) {
+      console.log("Emitting get_status");
+      socket.emit("get_status", id);
+      setProcessing(true);
+    }
+  }, [id, socket]);
+
   //This is used to listen to the status event
   React.useEffect(() => {
     if (socket) {
       socket.on("status", (data: any) => {
         console.log(data);
+        setSuccess(data.completed);
+        setProcessing(!data.completed);
       });
     }
   }, [socket]);
-
-  //This is used to get the status of the video
-  const getStatus = () => {
-    if (socket) {
-      console.log("Getting status", id, socket);
-      socket.emit("get_status", id);
-    }
-  };
 
   return (
     <div
       style={{ ...(styles.container as React.CSSProperties), height: height }}
     >
       <h1 style={styles.containerHeader}>Pose Detector</h1>
+
+      <h2>
+        {processing && <CircularProgress color="secondary" />}
+
+        {success && (
+          <h2
+            style={{
+              color: "green",
+            }}
+          >
+            Success
+          </h2>
+        )}
+      </h2>
+
       {url && <VideoRenderer src={url} />}
       {!url && (
         <DropZone
@@ -99,16 +119,6 @@ const HomePage = () => {
             Upload
           </Button>
         </div>
-      )}
-      {id !== null && (
-        <Button
-          variant="contained"
-          onClick={() => {
-            getStatus();
-          }}
-        >
-          Get status
-        </Button>
       )}
     </div>
   );
