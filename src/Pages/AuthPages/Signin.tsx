@@ -8,30 +8,12 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { IconButton, Input, InputAdornment } from "@mui/material";
+import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { login } from "../../helpers/apiHelpers/userApi";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      {/* <Link color="inherit" href="https://mui.com/"> */}
-      Your Website
-      {/* </Link>{" "} */}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { useAuth } from "../../Context/AuthContext";
 
 export default function SignIn() {
+  const { login, loading } = useAuth();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = {
@@ -39,20 +21,12 @@ export default function SignIn() {
       password: password,
     };
 
-    const { response, error } = await login(data);
-    if (error) {
-      console.log(error);
-    }
-    if (response) {
-      console.log(response.data);
-    }
+    login(data.username, data.password);
   };
 
   const [showpassword, setShowPassword] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
-
-  const checkUsername = async () => {};
 
   React.useEffect(() => {}, [username]);
 
@@ -136,7 +110,7 @@ export default function SignIn() {
           onChange={(e) => {
             setPassword(e.target.value);
           }}
-          autoFocus
+          // autoFocus
           InputProps={{
             style: {
               color: "white",
@@ -202,7 +176,7 @@ export default function SignIn() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign In
+          {loading ? <CircularProgress color="inherit" size={20} /> : "Sign In"}
         </Button>
         <Grid container>
           <Grid item xs></Grid>

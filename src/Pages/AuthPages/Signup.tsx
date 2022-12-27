@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { IconButton, Input, InputAdornment } from "@mui/material";
+import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import {
@@ -18,24 +15,11 @@ import {
   passwordCheck,
   userNameValidator,
 } from "../../helpers/validators";
-import { checkUsername, register } from "../../helpers/apiHelpers/userApi";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      {/* <Link color="inherit">Your Website</Link> {new Date().getFullYear()} */}
-      {"."}
-    </Typography>
-  );
-}
+import { checkUsername } from "../../helpers/apiHelpers/userApi";
+import { useAuth } from "../../Context/AuthContext";
 
 export default function SignUp() {
+  const { loading, signup } = useAuth();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const dataObj = {
@@ -44,13 +28,12 @@ export default function SignUp() {
       username: username,
       confirmPassword: confirmPassword,
     };
-    const { response, error } = await register(dataObj);
-    if (error) {
-      console.log(error);
-    }
-    if (response) {
-      console.log(response.data);
-    }
+    signup(
+      dataObj.username,
+      dataObj.password,
+      dataObj.email,
+      dataObj.confirmPassword
+    );
   };
 
   const [showpassword, setShowPassword] = React.useState(false);
@@ -358,7 +341,7 @@ export default function SignUp() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign Up
+          {loading ? <CircularProgress color="inherit" size={20} /> : "Sign Up"}
         </Button>
         <Grid container>
           <Grid item xs></Grid>

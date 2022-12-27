@@ -56,7 +56,10 @@ export const login = async ({
   password: string;
 }): Promise<Response> => {
   try {
-    const res = await axios.post("/user/login", { username, password });
+    const res = await axios.post("/user/login", {
+      username: username.toLowerCase(),
+      password,
+    });
     if (res.status === 200) {
       return { response: res, error: null };
     } else {

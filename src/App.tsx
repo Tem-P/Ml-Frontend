@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import styles from "./styles/app";
 import Router from "./Router/Router";
+import { AuthProvider } from "./Context/AuthContext";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   // set base url for axios
@@ -9,7 +11,11 @@ function App() {
 
   return (
     <div className="App" style={{ ...styles.app }}>
-      <Router />
+      <BrowserRouter>
+        <AuthProvider>
+          <Router />
+        </AuthProvider>
+      </BrowserRouter>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import SideNav from "../Components/SideNav";
+import { useAuth } from "../Context/AuthContext";
 import useWindowDimensions from "../helpers/CustomHooks/useWindowDimension";
 import SignIn from "../Pages/AuthPages/Signin";
 import SignUp from "../Pages/AuthPages/Signup";
@@ -10,44 +11,35 @@ import RealTime from "../Pages/RealTime";
 
 const Router = () => {
   const { height, width } = useWindowDimensions();
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const { isLoggedIn } = useAuth();
   if (!isLoggedIn) {
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="*" element={<ErrorPage />} />
+      </Routes>
     );
   } else {
     return (
-      <BrowserRouter>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: width,
-          }}
-        >
-          <SideNav />
-          <div style={{ flex: "1", overflow: "scroll", height: height }}>
-            <Routes>
-              {/* If on homw page redirect to weightlifting */}
-              {/* Redirect to weightlifting */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/weightLifting" element={<HomePage />} />
-              {/* For every other rute */}
-              <Route path="/RealTime" element={<RealTime />} />
-              <Route path="*" element={<ErrorPage />} />
-              {/* <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} /> */}
-            </Routes>
-          </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: width,
+        }}
+      >
+        <SideNav />
+        <div style={{ flex: "1", overflow: "scroll", height: height }}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/weightLifting" element={<HomePage />} />
+            <Route path="/RealTime" element={<RealTime />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
         </div>
-      </BrowserRouter>
+      </div>
     );
   }
 };

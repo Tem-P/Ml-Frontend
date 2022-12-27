@@ -3,6 +3,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { Button } from "@mui/material";
 import useWindowDimensions from "../helpers/CustomHooks/useWindowDimension";
 import { Link } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext";
 const icons = [
   {
     name: "Real Time",
@@ -22,6 +23,7 @@ const icons = [
 ];
 const SideNav = () => {
   const { height } = useWindowDimensions();
+  const { logout } = useAuth();
   return (
     <div
       style={{
@@ -97,6 +99,7 @@ const SideNav = () => {
             justifyContent: "center",
             alignItems: "center",
           }}
+          onClick={logout}
         >
           <LogoutIcon
             style={{
