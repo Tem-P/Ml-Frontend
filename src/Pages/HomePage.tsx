@@ -10,7 +10,7 @@ import { io } from "socket.io-client";
 
 const HomePage = () => {
   const [url, setUrl] = React.useState("");
-  const [files, setFiles] = React.useState([]);
+  const [files, setFiles] = React.useState<FileList | []>([]);
   const [uploading, setUploading] = React.useState(false);
   const [processing, setProcessing] = React.useState(false);
   const [success, setSuccess] = React.useState(false);

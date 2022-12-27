@@ -16,13 +16,16 @@ export const upload = async (
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void
 ): Promise<Response> => {
   let formData = new FormData();
+  const token = localStorage.getItem("token");
   const config = {
     headers: {
       "content-type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
     },
     onUploadProgress,
   };
   formData.append("file", file);
+  console.log("uploading file", formData);
   try {
     const res = await axios.post("/upload", formData, config);
     if (res.status === 200) {

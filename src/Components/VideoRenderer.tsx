@@ -5,8 +5,17 @@ type Props = {
 };
 
 const VideoRenderer = ({ src }: Props) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    if (videoRef.current) {
+      console.log(videoRef.current.duration, " duration of video");
+    }
+  }, [videoRef]);
+
   return (
     <video
+      ref={videoRef}
       src={src}
       style={{
         width: "100%",
