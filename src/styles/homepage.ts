@@ -34,6 +34,7 @@ const styles = {
     justifyContent: "space-between",
     width: "80%",
     marginTop: "2rem",
+    alignItems: "center",
   },
   uploaded: {
     fontSize: "1.5rem",

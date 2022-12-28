@@ -41,24 +41,28 @@ export const AuthProvider = (props: AuthProviderProps) => {
   const [loading, setLoading] = useState(false);
   // const navigate = useNavigation();
   const signin = async (username: string, password: string) => {
-    setLoading(true);
-    const { response, error } = await login({ username, password });
-    if (error) {
-      console.log(error);
+    try {
+      setLoading(true);
+      const { response, error } = await login({ username, password });
+      if (error) {
+        console.log(error);
+        setLoading(false);
+      }
+      if (!response.data.error) {
+        console.log(response.data);
+        setLoading(false);
+        localStorage.setItem("token", response.data.jwt);
+        console.log("token set", response.data.jwt);
+        setIsLoggedIn(true);
+      } else {
+        console.log("error", response.data.error);
+        alert(response.data.error);
+        setLoading(false);
+      }
+    } catch (e) {
+      console.log(e);
       setLoading(false);
     }
-    if (!response.data.error) {
-      console.log(response.data);
-      setLoading(false);
-      localStorage.setItem("token", response.data.jwt);
-      console.log("token set", response.data.jwt);
-      setIsLoggedIn(true);
-    } else {
-      console.log("error", response.data.error);
-      alert(response.data.error);
-      setLoading(false);
-    }
-    setLoading(false);
   };
 
   const signup = async (
@@ -67,29 +71,33 @@ export const AuthProvider = (props: AuthProviderProps) => {
     email: string,
     confirmPassword: string
   ) => {
-    setLoading(true);
-    const { response, error } = await register({
-      username,
-      password,
-      email,
-      confirmPassword,
-    });
-    if (error) {
-      console.log(error);
+    try {
+      setLoading(true);
+      const { response, error } = await register({
+        username,
+        password,
+        email,
+        confirmPassword,
+      });
+      if (error) {
+        console.log(error);
+        setLoading(false);
+      }
+      if (!response.data.error) {
+        console.log(response.data);
+        setLoading(false);
+        localStorage.setItem("token", response.data.jwt);
+        console.log("token set", response.data.jwt);
+        setIsLoggedIn(true);
+      } else {
+        console.log("error", response.data.error);
+        alert(response.data.error);
+        setLoading(false);
+      }
+    } catch (e) {
+      console.log(e);
       setLoading(false);
     }
-    if (!response.data.error) {
-      console.log(response.data);
-      setLoading(false);
-      localStorage.setItem("token", response.data.jwt);
-      console.log("token set", response.data.jwt);
-      setIsLoggedIn(true);
-    } else {
-      console.log("error", response.data.error);
-      alert(response.data.error);
-      setLoading(false);
-    }
-    setLoading(false);
   };
 
   const userRef = React.useRef(false);

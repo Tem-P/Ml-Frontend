@@ -15,6 +15,7 @@ const HomePage = () => {
   const [processing, setProcessing] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const { height } = useWindowDimensions();
+  const [dots, setDots] = React.useState("");
 
   const { uploaded, progress, id } = useUpload(
     uploading,
@@ -28,12 +29,6 @@ const HomePage = () => {
   //Initializes the socket io instance and sets the socket state variable
   const initSocket = () => {
     const newSocket = io("http://127.0.0.1:5000/api/v1/status");
-    // Check if the socket is connected
-
-    newSocket.on("connected", () => {
-      console.log("Connected");
-      alert("Connected");
-    });
     //set the socket state variable
     setSocket(newSocket);
   };
@@ -51,6 +46,14 @@ const HomePage = () => {
     }
   }, [id, socket]);
 
+  useEffect(() => {
+    // change the dots every 500ms
+    const interval = setInterval(() => {
+      setDots((dots) => (dots.length === 3 ? "" : dots + "."));
+    }, 500);
+    return () => clearInterval(interval);
+  }, [processing]);
+
   //This is used to listen to the status event
   React.useEffect(() => {
     if (socket) {
@@ -58,6 +61,18 @@ const HomePage = () => {
         console.log(data);
         setSuccess(data.completed);
         setProcessing(!data.completed);
+      });
+      socket.on("completed", (data: any) => {
+        console.log(data, "completed");
+      });
+      socket.on("connect", () => {
+        console.log("Connected");
+      });
+      socket.on("disconnect", () => {
+        console.log("Disconnected");
+      });
+      socket.on("error", (data: any) => {
+        console.log("Error", data);
       });
     }
   }, [socket]);
@@ -69,7 +84,12 @@ const HomePage = () => {
       <h1 style={styles.containerHeader}>Pose Detector</h1>
 
       <h2>
-        {processing && <CircularProgress color="secondary" />}
+        {processing && (
+          <>
+            <CircularProgress color="secondary" />
+            <h2 style={{ color: "red" }}>Processing{dots}</h2>
+          </>
+        )}
 
         {success && (
           <h2
@@ -115,6 +135,7 @@ const HomePage = () => {
             onClick={() => {
               setUploading(true);
             }}
+            disabled={uploading || uploaded}
           >
             Upload
           </Button>
