@@ -7,6 +7,7 @@ import useUpload from "../helpers/CustomHooks/useUpload";
 import useWindowDimensions from "../helpers/CustomHooks/useWindowDimension";
 import styles from "../styles/homepage";
 import { io } from "socket.io-client";
+import { download } from "../helpers/apiHelpers/upload";
 
 const HomePage = () => {
   const [url, setUrl] = React.useState("");
@@ -54,6 +55,8 @@ const HomePage = () => {
     return () => clearInterval(interval);
   }, [processing]);
 
+  // const [url, setUrl] = React.useState("");
+  //
   //This is used to listen to the status event
   React.useEffect(() => {
     if (socket) {
@@ -76,6 +79,26 @@ const HomePage = () => {
       });
     }
   }, [socket]);
+
+  const downloadFile = async () => {
+    const { response, error } = await download(id);
+    if (error) {
+      console.log(error);
+    }
+    if (response) {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      // save the file to the local file system
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `output_${new Date().toLocaleDateString()}.mp4`
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+  };
 
   return (
     <div
@@ -141,6 +164,15 @@ const HomePage = () => {
           </Button>
         </div>
       )}
+      <Button
+        variant="contained"
+        onClick={() => {
+          downloadFile();
+        }}
+        disabled={!success}
+      >
+        Download
+      </Button>
     </div>
   );
 };

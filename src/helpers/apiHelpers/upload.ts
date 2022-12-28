@@ -40,3 +40,26 @@ export const upload = async (
     // return { response: null, error: err };
   }
 };
+
+export const download = async (fileId: string): Promise<Response> => {
+  const token = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const res = await axios.get(`/download/${fileId}`, config);
+    if (res.status === 200) {
+      return { response: res, error: null };
+    } else {
+      return { response: null, error: res };
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
+
+    // return { response: null, error: err };
+  }
+};

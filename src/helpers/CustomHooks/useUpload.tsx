@@ -13,7 +13,7 @@ type setState = React.Dispatch<React.SetStateAction<boolean>>;
 const useUpload = (uploading: boolean, setUploading: setState, file: File) => {
   const [progress, setProgress] = React.useState(0);
   const [uploaded, setUploaded] = React.useState(false);
-  const [id, setId] = React.useState<number | null>(null);
+  const [id, setId] = React.useState<string | "">("");
 
   /**
    * A callback function that is used to update the progress state variable
